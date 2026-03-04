@@ -1,0 +1,356 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FELINE.OS // THE CAT ARCHIVE</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;700;800&family=JetBrains+Mono:wght@300;400;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg: #0a0a0a;
+            --surface: #121212;
+            --accent: #ff4d00;
+            --text-main: #e0e0e0;
+            --text-dim: #888;
+            --border: #222;
+            --font-display: 'Syne', sans-serif;
+            --font-mono: 'JetBrains Mono', monospace;
+            --transition: all 0.4s cubic-bezier(0.23, 1, 0.32, 1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background-color: var(--bg);
+            color: var(--text-main);
+            font-family: var(--font-mono);
+            overflow-x: hidden;
+            background-image: 
+                radial-gradient(circle at 2px 2px, #1a1a1a 1px, transparent 0);
+            background-size: 32px 32px;
+        }
+
+        header {
+            padding: 4rem 2rem;
+            max-width: 1400px;
+            margin: 0 auto;
+            position: relative;
+        }
+
+        .logo {
+            font-family: var(--font-display);
+            font-weight: 800;
+            font-size: clamp(3rem, 10vw, 8rem);
+            line-height: 0.9;
+            text-transform: uppercase;
+            letter-spacing: -0.04em;
+            color: transparent;
+            -webkit-text-stroke: 1px var(--accent);
+            position: relative;
+            z-index: 2;
+        }
+
+        .logo::after {
+            content: "FELINE.OS";
+            position: absolute;
+            left: 4px;
+            top: 4px;
+            color: var(--text-main);
+            -webkit-text-stroke: 0;
+            z-index: -1;
+            opacity: 0.1;
+        }
+
+        .controls {
+            margin-top: 2rem;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1rem;
+            border-top: 1px solid var(--border);
+            padding-top: 2rem;
+        }
+
+        button {
+            background: transparent;
+            border: 1px solid var(--border);
+            color: var(--text-dim);
+            padding: 0.75rem 1.5rem;
+            font-family: var(--font-mono);
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            cursor: pointer;
+            transition: var(--transition);
+            position: relative;
+            overflow: hidden;
+        }
+
+        button:hover, button.active {
+            border-color: var(--accent);
+            color: var(--accent);
+        }
+
+        button.active::before {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 2px;
+            background: var(--accent);
+        }
+
+        button.special {
+            background: var(--accent);
+            color: var(--bg);
+            border-color: var(--accent);
+            font-weight: 700;
+        }
+
+        button.special:hover {
+            filter: brightness(1.2);
+            color: var(--bg);
+        }
+
+        main {
+            padding: 2rem;
+            max-width: 1400px;
+            margin: 0 auto;
+            min-height: 60vh;
+        }
+
+        .gallery {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+            gap: 2rem;
+        }
+
+        .cat-card {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            padding: 1rem;
+            position: relative;
+            transition: var(--transition);
+            animation: fadeIn 0.8s ease-out forwards;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .cat-card:hover {
+            transform: translateY(-10px);
+            border-color: var(--accent);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.4);
+        }
+
+        .img-container {
+            width: 100%;
+            aspect-ratio: 1/1;
+            background: #1a1a1a;
+            overflow: hidden;
+            margin-bottom: 1.5rem;
+            position: relative;
+        }
+
+        .cat-card img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            filter: grayscale(100%);
+            transition: var(--transition);
+        }
+
+        .cat-card:hover img {
+            filter: grayscale(0%);
+            transform: scale(1.05);
+        }
+
+        .cat-info {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-end;
+        }
+
+        .cat-name {
+            font-family: var(--font-display);
+            font-size: 2rem;
+            font-weight: 700;
+            text-transform: uppercase;
+        }
+
+        .cat-tag {
+            font-size: 0.7rem;
+            color: var(--accent);
+            border: 1px solid var(--accent);
+            padding: 2px 6px;
+        }
+
+        .loader {
+            display: none;
+            position: fixed;
+            top: 2rem;
+            right: 2rem;
+            color: var(--accent);
+            font-size: 0.8rem;
+        }
+
+        .loader.active {
+            display: block;
+            animation: pulse 1s infinite;
+        }
+
+        @keyframes pulse {
+            0% { opacity: 1; }
+            50% { opacity: 0.3; }
+            100% { opacity: 1; }
+        }
+
+        footer {
+            padding: 4rem 2rem;
+            text-align: center;
+            font-size: 0.7rem;
+            color: var(--text-dim);
+            text-transform: uppercase;
+            letter-spacing: 0.2em;
+        }
+
+        /* Decorative elements */
+        .scanline {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 2px;
+            background: rgba(255, 77, 0, 0.1);
+            z-index: 1000;
+            pointer-events: none;
+            animation: scan 8s linear infinite;
+        }
+
+        @keyframes scan {
+            from { top: -10%; }
+            to { top: 110%; }
+        }
+    </style>
+</head>
+<body>
+    <div class="scanline"></div>
+    <div class="loader" id="loader">EXTRACTING DATA...</div>
+
+    <header>
+        <h1 class="logo">Feline.OS</h1>
+        <div class="controls">
+            <button onclick="loadCat('misty', this)">Misty</button>
+            <button onclick="loadCat('morris', this)">Morris</button>
+            <button onclick="loadCat('pixie', this)">Pixie</button>
+            <button onclick="loadCat('miro', this)">Miro</button>
+            <button onclick="loadCat('oskar', this)">Oskar</button>
+            <button onclick="loadCat('rocco', this)">Rocco</button>
+            <button class="special" onclick="loadRandomMix()">Random Mix</button>
+        </div>
+    </header>
+
+    <main>
+        <div class="gallery" id="gallery">
+            <!-- Content will be injected here -->
+        </div>
+    </main>
+
+    <footer>
+        &copy; 2026 FELINE.OS ARCHIVE // SECURED ACCESS ONLY
+    </footer>
+
+    <script>
+        const apis = {
+            misty: 'https://starnumber.vercel.app/misty',
+            morris: 'https://morrisapi.starnumber12046.workers.dev/morris',
+            pixie: 'https://pixie-coral.vercel.app/cat',
+            miro: 'https://miroapi.dragon-official7125.workers.dev/miro',
+            oskar: 'https://oskarapi.starnumber12046.workers.dev/oskar',
+            rocco: 'https://rocco-vercel.vercel.app/cat'
+        };
+
+        const gallery = document.getElementById('gallery');
+        const loader = document.getElementById('loader');
+
+        async function fetchCatData(id) {
+            try {
+                const response = await fetch(apis[id]);
+                const data = await response.json();
+                // Normalize data based on potential API structures (most cat APIs return an image URL)
+                return {
+                    id: id,
+                    name: id.charAt(0).toUpperCase() + id.slice(1),
+                    url: data.url || data.image || data[0]?.url || data.link
+                };
+            } catch (error) {
+                console.error(`Error fetching ${id}:`, error);
+                return null;
+            }
+        }
+
+        function createCard(cat) {
+            if (!cat || !cat.url) return '';
+            return `
+                <div class="cat-card">
+                    <div class="img-container">
+                        <img src="${cat.url}" alt="${cat.name}" loading="lazy">
+                    </div>
+                    <div class="cat-info">
+                        <div class="cat-name">${cat.name}</div>
+                        <div class="cat-tag">#${cat.id.toUpperCase()}</div>
+                    </div>
+                </div>
+            `;
+        }
+
+        async function loadCat(id, btn) {
+            // Update UI
+            document.querySelectorAll('.controls button').forEach(b => b.classList.remove('active'));
+            if (btn) btn.classList.add('active');
+            
+            loader.classList.add('active');
+            gallery.innerHTML = '';
+            
+            const cat = await fetchCatData(id);
+            if (cat) {
+                gallery.innerHTML = createCard(cat);
+            } else {
+                gallery.innerHTML = '<p>FAILED TO RETRIEVE FELINE DATA.</p>';
+            }
+            loader.classList.remove('active');
+        }
+
+        async function loadRandomMix() {
+            document.querySelectorAll('.controls button').forEach(b => b.classList.remove('active'));
+            loader.classList.add('active');
+            gallery.innerHTML = '';
+
+            const keys = Object.keys(apis);
+            // Fetch multiple cats concurrently
+            const promises = keys.map(id => fetchCatData(id));
+            const results = await Promise.all(promises);
+            
+            let html = '';
+            results.sort(() => Math.random() - 0.5).forEach(cat => {
+                html += createCard(cat);
+            });
+            
+            gallery.innerHTML = html;
+            loader.classList.remove('active');
+        }
+
+        // Initial load
+        window.addEventListener('DOMContentLoaded', () => {
+            loadRandomMix();
+        });
+    </script>
+</body>
+</html>
