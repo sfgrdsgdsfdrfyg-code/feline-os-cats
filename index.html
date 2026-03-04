@@ -281,19 +281,13 @@
         const loader = document.getElementById('loader');
 
         async function fetchCatData(id) {
-            try {
-                const response = await fetch(apis[id]);
-                const data = await response.json();
-                // Normalize data based on potential API structures (most cat APIs return an image URL)
-                return {
-                    id: id,
-                    name: id.charAt(0).toUpperCase() + id.slice(1),
-                    url: data.url || data.image || data[0]?.url || data.link
-                };
-            } catch (error) {
-                console.error(`Error fetching ${id}:`, error);
-                return null;
-            }
+            // Since the APIs return the image directly or are meant to be used as img src,
+            // we will use the URL directly with a cache-buster for randomization.
+            return {
+                id: id,
+                name: id.charAt(0).toUpperCase() + id.slice(1),
+                url: apis[id] + '?t=' + Date.now()
+            };
         }
 
         function createCard(cat) {
@@ -301,7 +295,7 @@
             return `
                 <div class="cat-card">
                     <div class="img-container">
-                        <img src="${cat.url}" alt="${cat.name}" loading="lazy">
+                        <img src="${cat.url}" alt="${cat.name}" loading="lazy" onerror="this.parentElement.innerHTML='<div style=\'padding:20px;color:var(--accent);font-size:0.7rem\'>[ERROR: DATA CORRUPTED]</div>'">
                     </div>
                     <div class="cat-info">
                         <div class="cat-name">${cat.name}</div>
